@@ -114,8 +114,8 @@
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
+                            <small class="text-muted">{{ Auth::user()->email }}</small>
                           </div>
                         </div>
                       </a>
@@ -126,18 +126,21 @@
                     <li>
                       <a class="dropdown-item" href="#">
                         <i class="bx bx-user me-2"></i>
-                        <span class="align-middle">My Profile</span>
+                        <span class="align-middle">Mi Perfil</span>
                       </a>
                     </li>
                     <li>
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="auth-login-basic.html">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
+                      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                          @csrf
+                      </form>
+                      <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                          <i class="bx bx-power-off me-2"></i>
+                          <span class="align-middle">Cerrar Sesión</span>
                       </a>
-                    </li>
+                  </li>                  
                   </ul>
                 </li>
                 <!--/ User -->

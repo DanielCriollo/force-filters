@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="{{ route('system.home') }}" class="app-brand-link">
+        <a href="{{ route('home') }}" class="app-brand-link">
             <span class="app-brand-logo demo">
             </span>
             <span class="app-brand-text demo menu-text fw-bolder ms-2">Force Filters</span>
@@ -15,8 +15,8 @@
 
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
-        <li class="menu-item {{ Request::routeIs('system.home') ? 'active' : '' }}">
-            <a href="{{ route('system.home') }}" class="menu-link">
+        <li class="menu-item {{ Request::routeIs('home') ? 'active' : '' }}">
+            <a href="{{ route('home') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Escritorio</div>
             </a>

@@ -1,6 +1,7 @@
 <?php
 
 use TCG\Voyager\Facades\Voyager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Home\HomeComponent;
 use App\Livewire\Admin\Sales\SalesComponent;
@@ -23,25 +24,19 @@ use App\Livewire\Admin\Products\ProductCategoryComponent;
 |
 */
 
-/* Route::get('/', function () {
-    return view('welcome');
-}); */
-
-
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('/c/customers',CustomerComponent::class)->name('customers');
-    Route::get('/c/product-types',ProductTypeComponent::class)->name('product-types');
-    Route::get('/c/product-categories',ProductCategoryComponent::class)->name('product-categories');
-
-    Route::get('/c/products',ProductComponent::class)->name('products');
-
-    Route::get('/sales-products',SalesProductsComponent::class)->name('sales.products');
-
-    Voyager::routes();
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('home');
+    }
+    return redirect()->route('login');
 });
 
 Route::group(['prefix' => 'system'], function () {
-    Route::get('/',HomeComponent::class)->name('system.home');
+    Voyager::routes();
+});
+
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('/',HomeComponent::class)->name('home');
 
     Route::get('/customers',CustomerComponent::class)->name('customers');
     Route::get('/brands',BrandComponent::class)->name('brands');
@@ -50,7 +45,10 @@ Route::group(['prefix' => 'system'], function () {
     Route::get('/sales',SalesComponent::class)->name('sales');
     Route::get('/sales-products',SalesProductsComponent::class)->name('sales.products');
     Route::get('/product-categories',ProductCategoryComponent::class)->name('product-categories');
-
+    Route::get('/c/products',ProductComponent::class)->name('products');
 });
 
 Route::get('sales/{id}/invoice', [SalesController::class, 'downloadInvoice'])->name('sales.invoice');
+
+Auth::routes();
+
