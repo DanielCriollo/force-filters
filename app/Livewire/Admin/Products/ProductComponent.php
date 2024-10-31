@@ -135,7 +135,6 @@ class ProductComponent extends Component
         $this->brandName = $product->brand->name; 
         $this->productTypeName = $product->category->productType->name;
         $this->productCategoryName = $product->category->name;
-        $this->mainPhoto = $product->main_photo;
     }
     
 
