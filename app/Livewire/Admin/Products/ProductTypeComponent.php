@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Admin\Products;
 
+use App\Product;
 use App\ProductType;
 use Livewire\Component;
+use App\ProductCategory;
 use Livewire\WithPagination;
 
 class ProductTypeComponent extends Component
@@ -83,8 +85,7 @@ class ProductTypeComponent extends Component
             'description' => $this->description,
         ]);
 
-        $message = $this->currentProductTypeId ? 'Tipo de producto actualizado correctamente' : 'Tipo de producto creado correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+        $this->dispatch('toast', message: 'Tipo de producto creado correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -103,8 +104,7 @@ class ProductTypeComponent extends Component
             'description' => $this->description
         ]);
 
-        $message = $this->currentProductTypeId ? 'Tipo de producto actualizado correctamente' : 'Tipo de producto creado correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+        $this->dispatch('toast', message: 'Tipo de producto actualizado correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -115,10 +115,21 @@ class ProductTypeComponent extends Component
 
     public function destroy()
     {
-        ProductType::find($this->currentProductTypeId)->delete();
-        $this->dispatch('alert', ['type' => 'success', 'message' => 'Tipo de producto eliminado correctamente']);
+        if (ProductCategory::where('product_type_id', $this->currentProductTypeId)->exists()) {
+            $this->cancel();
+            return $this->dispatch('toast', message: 'No se puede eliminar el tipo de producto, ya que está asociado a categorías de producto.', notify: 'error');
+        }
+
+        if (Product::where('product_type_id', $this->currentProductTypeId)->exists()) {
+            $this->cancel();
+            return $this->dispatch('toast', message: 'No se puede eliminar el tipo de producto, ya que está asociado a productos.', notify: 'error');
+        }
+
+        ProductType::destroy($this->currentProductTypeId);
+    
         $this->cancel();
-    }
+        return $this->dispatch('toast', message: 'Tipo de producto eliminado correctamente.', notify: 'success');
+    }  
 
     protected function getPaginationText($productTypes)
     {

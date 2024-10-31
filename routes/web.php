@@ -35,7 +35,7 @@ Route::group(['prefix' => 'system'], function () {
     Voyager::routes();
 });
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/',HomeComponent::class)->name('home');
 
     Route::get('/customers',CustomerComponent::class)->name('customers');
@@ -45,10 +45,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/sales',SalesComponent::class)->name('sales');
     Route::get('/sales-products',SalesProductsComponent::class)->name('sales.products');
     Route::get('/product-categories',ProductCategoryComponent::class)->name('product-categories');
-    Route::get('/c/products',ProductComponent::class)->name('products');
+    Route::get('/products',ProductComponent::class)->name('products');
 });
 
-Route::get('sales/{id}/invoice', [SalesController::class, 'downloadInvoice'])->name('sales.invoice');
+Route::get('sales/{uuid}/invoice', [SalesController::class, 'downloadInvoice'])->name('sales.invoice');
 
 Auth::routes();
 

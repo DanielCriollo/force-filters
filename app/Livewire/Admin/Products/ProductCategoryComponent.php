@@ -2,9 +2,10 @@
 
 namespace App\Livewire\Admin\Products;
 
+use App\Product;
+use App\ProductType;
 use Livewire\Component;
 use App\ProductCategory;
-use App\ProductType;
 use Livewire\WithPagination;
 
 class ProductCategoryComponent extends Component
@@ -93,8 +94,7 @@ class ProductCategoryComponent extends Component
             'description' => $this->description,
         ]);
 
-        $message = $this->currentProductCategoryId ? 'Categoría de producto actualizada correctamente' : 'Categoría de producto creada correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+        $this->dispatch('toast', message: 'Categoría de producto creada correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -114,8 +114,7 @@ class ProductCategoryComponent extends Component
             'description' => $this->description
         ]);
 
-        $message = 'Categoría de producto actualizada correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+        $this->dispatch('toast', message: 'Categoría de producto actualizada correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -126,10 +125,17 @@ class ProductCategoryComponent extends Component
 
     public function destroy()
     {
-        ProductCategory::find($this->currentProductCategoryId)->delete();
-        $this->dispatch('alert', ['type' => 'success', 'message' => 'Categoría de producto eliminada correctamente']);
+        if (Product::where('product_category_id', $this->currentProductCategoryId)->exists()) {
+            $this->cancel();
+            return $this->dispatch('toast', message: 'No se puede eliminar la categoría de producto, ya que está asociada a productos.', notify: 'error');
+        }
+    
+        ProductCategory::destroy($this->currentProductCategoryId);
+    
         $this->cancel();
+        return $this->dispatch('toast', message: 'Categoría de producto eliminada correctamente.', notify: 'success');
     }
+    
 
     protected function getPaginationText($productCategories)
     {

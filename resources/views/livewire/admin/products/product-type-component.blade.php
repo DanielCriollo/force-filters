@@ -15,7 +15,7 @@
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Listado de tipos de productos</h5>
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#create-modal">Nuevo Cliente</button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#create-modal">Nuevo Tipo</button>
                 </div>
                 <div class="card-body">
                     <label for="">Filtro de búsqueda:</label>

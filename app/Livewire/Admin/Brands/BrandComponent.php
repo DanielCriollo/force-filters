@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Brands;
 
 use App\Brand;
+use App\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -81,8 +82,7 @@ class BrandComponent extends Component
             'name' => $this->name,
         ]);
 
-        $message = 'Marca creada correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+        $this->dispatch('toast', message: 'Marca creada correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -100,8 +100,7 @@ class BrandComponent extends Component
             'name' => $this->name,
         ]);
 
-        $message = 'Marca actualizada correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+        $this->dispatch('toast', message: 'Marca actualizada correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -112,10 +111,18 @@ class BrandComponent extends Component
 
     public function destroy()
     {
-        Brand::find($this->currentBrandId)->delete();
-        $this->dispatch('alert', ['type' => 'success', 'message' => 'Marca eliminada correctamente']);
+        if (Product::where('brand_id', $this->currentBrandId)->exists()) {
+            $this->dispatch('toast', message: 'No se puede eliminar la marca, ya que tiene productos asociados.', notify: 'error');
+            $this->cancel();
+            return;
+        }
+    
+        Brand::destroy($this->currentBrandId);
+    
+        $this->dispatch('toast', message: 'Marca eliminada correctamente.', notify: 'success');
         $this->cancel();
     }
+    
 
     protected function getPaginationText($brands)
     {

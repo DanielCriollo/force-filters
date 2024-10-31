@@ -3,16 +3,18 @@
 namespace App\Livewire\Admin\Products;
 
 use App\Brand;
-use App\ProductType;
 use App\Product;
+use App\ProductType;
 use Livewire\Component;
 use App\ProductCategory;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use App\Models\ProductPriceHistory;
 
 class ProductComponent extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public $searchName = '';
     public $sortField = 'id';
@@ -31,10 +33,16 @@ class ProductComponent extends Component
     public $productType;
     public $productCategory;
     public $brand;
+    public $productTypeName;
+    public $productCategoryName;
+    public $brandName;
 
     public $productTypes = [];
     public $categories = [];
     public $brands = [];
+
+    public $mainPhoto;
+    public $currentImage;
 
     protected function rules()
     {
@@ -50,6 +58,7 @@ class ProductComponent extends Component
             'productType' => 'required|exists:product_types,id',
             'productCategory' => 'required|exists:product_categories,id',
             'brand' => 'nullable|exists:brands,id',
+            'mainPhoto' => 'nullable|image|max:2048',
         ];
     }
 
@@ -67,6 +76,7 @@ class ProductComponent extends Component
             'productType' => 'tipo de producto',
             'productCategory' => 'categoría',
             'brand' => 'marca',
+            'mainPhoto' => 'imagen',
         ];
     }
 
@@ -121,6 +131,11 @@ class ProductComponent extends Component
         $this->productType = $product->category->productType->id;
         $this->updatedProductType();
         $this->productCategory = $product->product_category_id;
+
+        $this->brandName = $product->brand->name; 
+        $this->productTypeName = $product->category->productType->name;
+        $this->productCategoryName = $product->category->name;
+        $this->mainPhoto = $product->main_photo;
     }
     
 
@@ -144,6 +159,8 @@ class ProductComponent extends Component
     {
         $this->validate();
 
+        $photoPath = $this->mainPhoto ? $this->mainPhoto->store('product_photos', 'public') : null;
+
         $product = Product::create([
             'name' => $this->name,
             'description' => $this->description,
@@ -156,13 +173,14 @@ class ProductComponent extends Component
             'product_type_id' => $this->productType,
             'product_category_id' => $this->productCategory,
             'brand_id' => $this->brand,
+            'main_photo' => $photoPath,
         ]);
 
         $this->logPriceHistory($product->id, 'cost', $this->costPrice);
         $this->logPriceHistory($product->id, 'sale', $this->salePrice);
 
-        $message = 'Producto creado correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+
+        $this->dispatch('toast', message: 'Producto creado correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -180,6 +198,8 @@ class ProductComponent extends Component
         $oldCostPrice = $product->cost_price;
         $oldSalePrice = $product->sale_price;
 
+        $photoPath = $this->mainPhoto ? $this->mainPhoto->store('product_photos', 'public') : $product->main_photo;
+
         $product->update([
             'name' => $this->name,
             'description' => $this->description,
@@ -191,6 +211,7 @@ class ProductComponent extends Component
             'reorder_quantity' => $this->reorderQuantity,
             'product_category_id' => $this->productCategory,
             'brand_id' => $this->brand,
+            'main_photo' => $photoPath,
         ]);
 
         if ($oldCostPrice !== $this->costPrice) {
@@ -200,9 +221,7 @@ class ProductComponent extends Component
             $this->logPriceHistory($product->id, 'sale', $this->salePrice);
         }
     
-
-        $message = 'Producto actualizado correctamente';
-        $this->dispatch('alert', ['type' => 'success', 'message' => $message]);
+        $this->dispatch('toast', message: 'Producto actualizado correctamente.', notify: 'success');
         $this->cancel();
     }
 
@@ -213,10 +232,22 @@ class ProductComponent extends Component
 
     public function destroy()
     {
-        Product::find($this->currentProductId)->delete();
-        $this->dispatch('alert', ['type' => 'success', 'message' => 'Producto eliminado correctamente']);
+        $product = Product::find($this->currentProductId);
+    
+        if ($product->salesOrdersItems()->exists()) {
+            $this->dispatch('toast', message: 'No se puede eliminar el producto porque hay una orden de venta asociada.', notify: 'error');
+            
+            $this->cancel();
+            return;
+        }
+
+        $product->priceHistories()->delete(); 
+
+        $product->delete();
+        $this->dispatch('toast', message: 'Producto eliminado correctamente.', notify: 'success');
         $this->cancel();
     }
+    
 
     protected function getPaginationText($products)
     {
@@ -268,5 +299,10 @@ class ProductComponent extends Component
         $this->resetErrorBag();
         $this->resetValidation();
         $this->dispatch('close-modal');
+    }
+
+    public function clearImage()
+    {
+        $this->mainPhoto = null;
     }
 }

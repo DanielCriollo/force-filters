@@ -8,10 +8,10 @@ use App\Http\Controllers\Controller;
 
 class SalesController extends Controller
 {
-    public function downloadInvoice($id)
+    public function downloadInvoice($uuid)
     {
         // Obtener la orden de venta
-        $sale = SalesOrder::with('items.product')->findOrFail($id);
+        $sale = SalesOrder::with('items.product')->where('uuid', $uuid)->firstOrFail();
 
         // Generar el PDF
         $pdf = PDF::loadView('invoices.invoice', compact('sale'));

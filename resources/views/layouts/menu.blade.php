@@ -52,6 +52,12 @@
         <!-- Components -->
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Productos</span></li>
 
+        <li class="menu-item {{ Request::routeIs('products') ? 'active' : '' }}">
+            <a href="{{ route('products') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                <div data-i18n="Basic">Productos</div>
+            </a>
+        </li> 
         <li class="menu-item {{ Request::routeIs('brands') ? 'active' : '' }}">
             <a href="{{ route('brands') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>

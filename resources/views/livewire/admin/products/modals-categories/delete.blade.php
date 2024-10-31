@@ -1,16 +1,21 @@
-<div wire:ignore.self class="modal modal-danger fade" tabindex="-1" data-backdrop="static" data-keyboard="false" id="delete-modal" role="dialog">
-    <div class="modal-dialog">
+<div wire:ignore.self class="modal fade" id="delete-modal" data-bs-backdrop="static" tabindex="-1" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document" wire:ignore.self>
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" aria-label="{{ __('voyager::generic.close') }}" wire:click="cancel()"><span aria-hidden="true">&times;</span></button>
                 <h5 class="modal-title">
-                    <i class="fa fa-trash"></i>&nbsp;{{ __('voyager::generic.delete_question') }} la categoría de producto?
+                    {{ __('voyager::generic.delete_question') }} la categoría?
                 </h5>
+                <button type="button" class="btn-close" wire:click="cancel"></button>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger pull-right" wire:click="destroy()">{{ __('voyager::generic.delete_confirm') }}</button>
-                <button type="button" class="btn btn-default pull-right" wire:click="cancel()"><i class="fa fa-ban"></i>&nbsp;{{ __('voyager::generic.cancel') }}</button>
+                <button type="button" class="btn btn-outline-secondary" wire:click="cancel()">
+                    {{ __('voyager::generic.cancel') }}
+                </button>
+                <button class="btn btn-danger" wire:click="destroy()">
+                    {{ __('voyager::generic.delete_confirm') }}
+                </button>
             </div>
+            
         </div>
     </div>
 </div>

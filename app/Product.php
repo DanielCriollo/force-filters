@@ -3,7 +3,10 @@
 namespace App;
 
 use App\Brand;
+use App\SalesOrder;
+use App\SalesOrderItem;
 use App\ProductCategory;
+use App\Models\ProductPriceHistory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -19,6 +22,7 @@ class Product extends Model
         'name',
         'description',
         'sku',
+        'product_type_id',
         'product_category_id',
         'brand_id',
         'cost_price',
@@ -26,6 +30,7 @@ class Product extends Model
         'stock_quantity',
         'min_stock_quantity',
         'reorder_quantity',
+        'main_photo'
     ];
 
     
@@ -45,5 +50,15 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class, 'brand_id');
+    }
+
+    public function salesOrdersItems()
+    {
+        return $this->hasMany(SalesOrderItem::class);
+    }
+
+    public function priceHistories()
+    {
+        return $this->hasMany(ProductPriceHistory::class);
     }
 }

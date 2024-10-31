@@ -72,7 +72,7 @@
                                                 <td>{{ number_format($sale->total_amount, 2) }}</td>
                                                 <td>{{ $sale->status }}</td>
                                                 <td>
-                                                    <button class="btn btn-info btn-sm" onclick="window.open('{{ route('sales.invoice', $sale->id) }}', '_blank')">Ver Factura</button>
+                                                    <button class="btn btn-info btn-sm" onclick="window.open('{{ route('sales.invoice', $sale->uuid) }}', '_blank')">Ver Factura</button>
                                                     <button  class="btn btn-danger btn-sm" 
                                                         onclick="if(confirm('¿Estás seguro de que deseas eliminar esta venta?')) { @this.deleteSale({{ $sale->id }}) }">
                                                         Eliminar
