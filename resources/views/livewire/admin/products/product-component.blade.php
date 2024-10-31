@@ -37,6 +37,8 @@
                                             <th>Imagen</th>
                                             <x-table-column field="name" sortField="{{ $sortField }}"
                                                 sortDirection="{{ $sortDirection }}" label="Nombre" />
+                                            <x-table-column field="description" sortField="{{ $sortField }}"
+                                                sortDirection="{{ $sortDirection }}" label="Descripción" />    
                                             <x-table-column field="productType" sortField="{{ $sortField }}"
                                                 sortDirection="{{ $sortDirection }}" label="Tipo" />
                                             <x-table-column field="productCategory" sortField="{{ $sortField }}"
@@ -63,8 +65,8 @@
                                                     Sin imagen
                                                 @endif
                                             </td>
-                                                                                   
                                             <td>{{ $product->name }}</td>
+                                            <td>{{ $product->description }}</td>
                                             <td>{{ $product->category->productType->name }}</td>
                                             <td>{{ $product->category->name }}</td>
                                             <td>{{ $product->sku }}</td>

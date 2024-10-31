@@ -16,6 +16,13 @@
                             @enderror
                         </div>
                         <div class="form-group mt-2">
+                            <label>Descripción: <span class="text-danger">*</span></label>
+                            <textarea  class="form-control" wire:model.live='description'></textarea>
+                            @error('description')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="form-group mt-2">
                             <label>Tipo de Producto: <span class="text-danger">*</span></label>
                             <select class="form-control @error('productType') input-error @enderror" wire:model.live="productType">
                                 <option disabled value="">Seleccione un tipo</option>
