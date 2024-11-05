@@ -7,16 +7,14 @@
     <title>Factura #{{ $sale->id }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos básicos para la factura */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #fff;
-            /* Fondo blanco */
             color: #333;
             font-size: 0.8em;
-            /* Tamaño de fuente más pequeño */
+
         }
 
         .container {
@@ -24,7 +22,6 @@
             margin: 0 auto;
             padding: 10px;
             background-color: #fff;
-            /* Fondo blanco */
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -34,24 +31,18 @@
             border-collapse: collapse;
             margin-bottom: 10px;
         }
-
         th,
         td {
             border: 1px solid #ddd;
-            /* Bordes sutiles */
             padding: 6px;
-            /* Espaciado en celdas reducido */
             text-align: left;
             font-size: 0.8em;
-            /* Tamaño de fuente en las celdas ajustado */
         }
 
         th {
             background-color: #f2f2f2;
-            /* Fondo de encabezados */
             color: #333;
             font-weight: bold;
-            /* Negrita */
         }
 
         .invoice-header {
@@ -63,24 +54,19 @@
 
         .company-name {
             font-weight: bold;
-            /* Negrita */
             font-size: 1.2em;
-            /* Tamaño de fuente del nombre de la empresa reducido */
             margin-bottom: 5px;
-            /* Espacio inferior para separación */
         }
 
         .company-info {
             text-align: right;
             line-height: 1.5;
-            /* Para mejorar la alineación vertical */
         }
 
         .total {
             font-weight: bold;
             text-align: right;
             font-size: 1em;
-            /* Tamaño de fuente para el total ajustado */
         }
 
         .footer {
@@ -88,7 +74,6 @@
             margin-top: 15px;
             color: #888;
             font-size: 0.7em;
-            /* Tamaño de fuente para el pie de página más pequeño */
         }
 
         .text-center {
@@ -101,29 +86,55 @@
 
         h3 {
             margin-top: 20px;
-            /* Espacio superior para encabezados */
             font-weight: 700;
-            /* Negrita */
             font-size: 1.2em;
-            /* Tamaño de fuente para encabezados reducido */
             border-bottom: 1px solid #ccc;
-            /* Línea inferior */
             padding-bottom: 5px;
-            /* Espacio inferior */
+        }
+        .distributor-info {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .logo-container img {
+            width: 40px;
+            height: auto;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="invoice-header">
-            <div class="company-name">FORCE FILTERS ®</div>
-            <div class="company-info">
-                Email: forcefilters@gmail.com<br>
-                Teléfono: 3182574787
-            </div>
-        </div>
-
+        <table style="border-width: 0px">
+            <tr style="border-width: 0px">
+                <td style="border-width: 0px; font-weight: bold; font-size: 1.2em;">
+                    <div class="company-name">FORCE FILTERS ®</div>
+                    <div style="font-size: 0.5em; color: #555"><small>Distribuidores de:<br><br></small></div>
+                    <div class="logo-container">
+                        <img src="{{ public_path('assets/img/logos/baldwin.png') }}" alt="baldwin">
+                        <img src="{{ public_path('assets/img/logos/donsson.png') }}" alt="donsson">
+                        <img src="{{ public_path('assets/img/logos/fleetguard.png') }}" alt="fleetguard">
+                        <img src="{{ public_path('assets/img/logos/parker-racor.png') }}" alt="parker-racor">
+                        <img src="{{ public_path('assets/img/logos/sakura.png') }}" alt="sakura">
+                    </div>
+                </td>
+                <td style="border-width: 0px">
+                    <div class="company-info">
+                        Email: forcefilters@gmail.com<br>
+                        Teléfono: 3182574787
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
         <table>
             <tr>
                 <th>Fecha de compra: </th>

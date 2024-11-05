@@ -50,5 +50,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
 Route::get('sales/{uuid}/invoice', [SalesController::class, 'downloadInvoice'])->name('sales.invoice');
 
+Route::get('/fac', function () {
+    
+    return view('invoices.invoice');
+});
+
 Auth::routes();
 
