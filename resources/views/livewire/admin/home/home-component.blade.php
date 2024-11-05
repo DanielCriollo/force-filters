@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-lg-12 mb-4 order-0">
                 <div class="d-flex align-items-end row">
-                    <div class="col-lg-3 col-md-12 col-6 mb-4">
+                    <div class="col-lg-3 col-md-12 col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
@@ -31,7 +31,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-12 col-6 mb-4">
+                    <div class="col-lg-3 col-md-12 col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-12 col-6 mb-4">
+                    <div class="col-lg-3 col-md-12 col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
