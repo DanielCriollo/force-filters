@@ -31,7 +31,7 @@ class HomeComponent extends Component
 
     public function calcularTotalVendidoUltimoMes()
     {
-        $this->totalVendidoUltimoMes = SalesOrder::where('order_date', '>=', now()->subDays(30))
+        $this->totalVendidoUltimoMes = SalesOrder::where('updated_at', '>=', now()->subDays(30))
             ->sum('total_amount');
     }
 }
