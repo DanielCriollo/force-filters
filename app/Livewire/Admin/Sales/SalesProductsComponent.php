@@ -47,10 +47,39 @@ class SalesProductsComponent extends Component
     public $categories = [];
     public $brands = [];
 
+    public $saleOrderId;
 
-    public function mount(){
+    public $showModals = false;
+
+    public function mount($id = null){
+
+        $this->showModals = false;
+
         $this->productTypes = ProductType::all();
         $this->brands = Brand::all();
+
+        if($id){
+            $this->saleOrderId = $id;
+            $saleOrder = SalesOrder::find($id);
+            $this->selectCustomer($saleOrder->customer_id);
+        }
+
+        $products = SalesOrderItem::where('sales_order_id', '=', $this->saleOrderId)->get();
+        foreach($products as $product){
+            $this->selectProduct($product->product_id);
+
+            $this->productsCart[] = [
+                'id' => $this->productId,
+                'name' => $this->nameProduct,
+                'quantity' => $product->quantity,
+                'unitPrice' => $this->salePrice,
+                'subtotal' => $product->quantity * $this->salePrice
+            ];
+    
+            $this->cancel();
+        }
+
+        $this->showModals = true;
     }
 
     public function searchName()
@@ -108,7 +137,9 @@ class SalesProductsComponent extends Component
         $this->mainPhoto = $product->main_photo;
         $this->photos = $product->photos;
 
-        $this->dispatch('toast', message: 'Producto seleccionado correctamente.', notify: 'success');
+        if($this->showModals){
+            $this->dispatch('toast', message: 'Producto seleccionado correctamente.', notify: 'success');
+        }
     }
 
 
@@ -126,7 +157,9 @@ class SalesProductsComponent extends Component
         $this->email = $customer->email;
         $this->phone = $customer->phone;
 
-        $this->dispatch('toast', message: 'Cliente seleccionado exitosamente.', notify: 'success');
+        if($this->showModals){
+            $this->dispatch('toast', message: 'Cliente seleccionado exitosamente.', notify: 'success');
+        }
     }
 
     public function render()
@@ -177,7 +210,7 @@ class SalesProductsComponent extends Component
 
         $this->cancel();
 
-        $this->dispatch('toast', message: 'Poroducto agregado exitosamente.', notify: 'success');
+        $this->dispatch('toast', message: 'Producto agregado exitosamente.', notify: 'success');
     }
 
     public function store()
@@ -188,30 +221,41 @@ class SalesProductsComponent extends Component
             'productsCart.required' => 'Debe agregar al menos un producto.',
             'productsCart.min' => 'Debe agregar al menos un producto.',
         ]);
-
+    
         $totalAmount = collect($this->productsCart)->sum('subtotal');
-
-        $sale = new SalesOrder();
+    
+        $sale = $this->saleOrderId ? SalesOrder::find($this->saleOrderId) : new SalesOrder();
         $sale->customer_id = $this->customerId;
         $sale->order_date = now();
         $sale->total_amount = $totalAmount;
         $sale->status = 'completed';
         $sale->shipped_date = now();
-        $sale->save();
+        
+        if ($this->saleOrderId) {
 
-        foreach ($this->productsCart as $item) {
-            $salesOrderItem = new SalesOrderItem();
-            $salesOrderItem->sales_order_id = $sale->id;
-            $salesOrderItem->product_id = $item['id'];
-            $salesOrderItem->quantity = $item['quantity'];
-            $salesOrderItem->unit_price = $item['unitPrice'];
-            $salesOrderItem->total_price = $item['subtotal'];
-
-            $salesOrderItem->save();
+            $sale->items()->delete();
+            $sale->update();
+        } else {
+            $sale->save();
         }
-        $this->dispatch('toast', message: 'Venta creada con éxito.', notify: 'success');
-        return redirect()->route('sales');
+    
+        foreach ($this->productsCart as $item) {
+            $sale->items()->create([
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+                'unit_price' => $item['unitPrice'],
+                'total_price' => $item['subtotal'],
+            ]);
+        }
+    
+        $message = $this->saleOrderId ? 'Venta actualizada con éxito.' : 'Venta creada con éxito.';
+        $this->dispatch('toast', message: $message, notify: 'success');
+    
+        if (!$this->saleOrderId) {
+            $this->saleOrderId = $sale->id;
+        }
     }
+    
 
     public function createCustomer()
     {

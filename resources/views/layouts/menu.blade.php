@@ -36,8 +36,8 @@
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Ventas</span></li>
 
 
-        <li class="menu-item {{ Request::routeIs('sales.products') ? 'active' : '' }}">
-            <a href="{{ route('sales.products') }}" class="menu-link">
+        <li class="menu-item {{ Request::routeIs('sales-products') ? 'active' : '' }}">
+            <a href="{{ route('sales-products') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
                 <div data-i18n="Basic">Nueva Venta</div>
             </a>

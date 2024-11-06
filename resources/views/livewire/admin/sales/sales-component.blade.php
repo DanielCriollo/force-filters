@@ -10,7 +10,7 @@
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Listado de ventas</h5>
-                    <a href="{{ route('sales.products') }}" class="btn btn-success">Nueva Venta</a>
+                    <a href="{{ route('sales-products') }}" class="btn btn-success">Nueva Venta</a>
                 </div>
                 <div class="card-body">
                     <label for="">Filtro de búsqueda:</label>
@@ -72,10 +72,15 @@
                                                 <td>{{ number_format($sale->total_amount, 2) }}</td>
                                                 <td>{{ $sale->status }}</td>
                                                 <td>
-                                                    <button class="btn btn-info btn-sm" onclick="window.open('{{ route('sales.invoice', $sale->uuid) }}', '_blank')">Ver Factura</button>
-                                                    <button  class="btn btn-danger btn-sm" 
+                                                    <button class="btn btn-info btn-sm" title="Ver PDF de la Factura" onclick="window.open('{{ route('sales.invoice', $sale->uuid) }}', '_blank')">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </button>
+                                                    <button class="btn btn-warning btn-sm" title="Editar Venta" onclick="window.open('{{ route('sales-products.update', $sale->id) }}')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" title="Eliminar Venta" 
                                                         onclick="if(confirm('¿Estás seguro de que deseas eliminar esta venta?')) { @this.deleteSale({{ $sale->id }}) }">
-                                                        Eliminar
+                                                        <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
                                             </tr>

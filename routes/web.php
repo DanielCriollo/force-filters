@@ -43,17 +43,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/product-types',ProductTypeComponent::class)->name('product-types');
 
     Route::get('/sales',SalesComponent::class)->name('sales');
-    Route::get('/sales-products',SalesProductsComponent::class)->name('sales.products');
+    Route::get('/sales-products',SalesProductsComponent::class)->name('sales-products');
+    Route::get('/sales-products/{id}/update',SalesProductsComponent::class)->name('sales-products.update');
     Route::get('/product-categories',ProductCategoryComponent::class)->name('product-categories');
     Route::get('/products',ProductComponent::class)->name('products');
 });
 
 Route::get('sales/{uuid}/invoice', [SalesController::class, 'downloadInvoice'])->name('sales.invoice');
-
-Route::get('/fac', function () {
-    
-    return view('invoices.invoice');
-});
 
 Auth::routes();
 

@@ -126,16 +126,16 @@
                                                 <th>Cantidad</th>
                                                 <th>Precio Unitario</th>
                                                 <th>Subtotal</th>
+                                                <th>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @error('productsCart')
                                             <tr>
-                                                <th colspan="5" class="text-center">
+                                                <th colspan="6" class="text-center">
                                                     <span class="text-danger">{{ $message }}</span>
                                                 </th>
                                             </tr>
-                                                
                                             @enderror   
                                             @foreach ($productsCart as $key => $item)
                                             <tr>
@@ -144,6 +144,14 @@
                                                 <td>{{ number_format($item['quantity']) }}</td>
                                                 <td>{{ number_format($item['unitPrice'], 2, '.', ',') }}</td>
                                                 <td>{{ number_format($item['subtotal'], 2, '.', ',') }}</td>
+                                                <td>
+                                                    <button class="btn btn-warning btn-sm" title="Actualizar">
+                                                        <i class="fas fa-sync"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" title="Eliminar">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -153,9 +161,10 @@
                                                 <th>{{ number_format(array_sum(array_column($productsCart, 'quantity'))) }}</th>
                                                 <th>{{ number_format(array_sum(array_column($productsCart, 'unitPrice')), 2, '.', ',') }}</th>
                                                 <th>{{ number_format(array_sum(array_column($productsCart, 'subtotal')), 2, '.', ',') }}</th>
+                                                <th></th>
                                             </tr>
                                         </tfoot>
-                                    </table>                                                                  
+                                    </table>                                                                                                   
                                 </div>
                             </div>
                         </div>
@@ -165,7 +174,12 @@
                     <div class="card-body">
                         <div class="row mt-2">
                             <div class="col-lg-12 text-center">
+                                @if ($saleOrderId)
+                                <button class="btn btn-success" wire:click='store()'>Actualizar Compra</button>
+                                @else
                                 <button class="btn btn-success" wire:click='store()'>Finalizar Compra</button>
+                                @endif
+                                
                             </div>
                         </div>
                     </div>
