@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-lg-12 mb-4 order-0">
                 <div class="d-flex align-items-end row">
-                    <div class="col-lg-3 col-md-12 col-12 mb-4">
+                    {{-- <div class="col-lg-3 col-md-12 col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
@@ -29,7 +29,7 @@
                                     ventas</small>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="col-lg-3 col-md-12 col-12 mb-4">
                         <div class="card">
@@ -123,5 +123,51 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-lg-12 mb-4 order-0">
+                <div class="d-flex align-items-end row">
+                    <div class="col-lg-12 col-md-12 col-12 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <canvas id="salesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('livewire:init', () => {
+            const salesData = @json($salesData);
+
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: salesData.labels,
+                    datasets: [{
+                        label: 'Ventas Totales por Mes ($)',
+                        data: salesData.data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true },
+                        tooltip: { callbacks: { label: (context) => '$' + context.raw.toLocaleString() } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+    </script>
 </div>

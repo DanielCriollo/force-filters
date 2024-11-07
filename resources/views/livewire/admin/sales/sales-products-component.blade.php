@@ -20,6 +20,31 @@
                 </div>
                 <div class="card-body">
                     <div class="row mt-2">
+                        <div class="col-lg-3">
+                            <label>Fecha</label>
+                            <input type="datetime-local" class="form-control" wire:model.live='orderDate'>
+                        </div>                        
+                        <div class="col-lg-3">
+                            <label>Modo de pago: </label>
+                            <select  class="form-control" wire:model.live='paymentMode'>
+                                <option value="">Seleccionar</option>
+                                <option value="credit">Crédito</option>
+                                <option value="cash">Contado</option>
+                            </select>
+                        </div>
+                        @if($paymentMode == 'credit')
+                            <div class="col-lg-3">
+                                <label>Plazo (días):</label>
+                                <input type="number" class="form-control" min="1" wire:model.live="paymentTerm">
+                            </div>
+
+                            <div class="col-lg-3">
+                                <label>Fecha de pago:</label>
+                                <input type="date" class="form-control" wire:model.live="dueDate" readonly>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="row mt-2">
                         <div class="col-lg-12">
                             <label>Buscar Cliente</label>
                             <input type="text" class="form-control" wire:model="searchCustomer" wire:keyup="searchName"

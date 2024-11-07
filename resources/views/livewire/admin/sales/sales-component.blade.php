@@ -72,12 +72,13 @@
                                                 <td>{{ number_format($sale->total_amount, 2) }}</td>
                                                 <td>{{ $sale->status }}</td>
                                                 <td>
-                                                    <button class="btn btn-info btn-sm" title="Ver PDF de la Factura" onclick="window.open('{{ route('sales.invoice', $sale->uuid) }}', '_blank')">
+                                                    <a class="btn btn-info btn-sm" title="Ver PDF de la Factura" href="{{ route('sales.invoice', $sale->uuid) }}" target="_blank">
                                                         <i class="fas fa-file-pdf"></i>
-                                                    </button>
-                                                    <button class="btn btn-warning btn-sm" title="Editar Venta" onclick="window.open('{{ route('sales-products.update', $sale->id) }}')">
+                                                    </a>
+                                                    
+                                                    <a class="btn btn-warning btn-sm" title="Editar Venta" href="{{ route('sales-products.update', $sale->id) }}">
                                                         <i class="fas fa-edit"></i>
-                                                    </button>
+                                                    </a>                                                    
                                                     <button class="btn btn-danger btn-sm" title="Eliminar Venta" 
                                                         onclick="if(confirm('¿Estás seguro de que deseas eliminar esta venta?')) { @this.deleteSale({{ $sale->id }}) }">
                                                         <i class="fas fa-trash-alt"></i>
