@@ -118,7 +118,9 @@
         <table style="border-width: 0px">
             <tr style="border-width: 0px">
                 <td style="border-width: 0px; font-weight: bold; font-size: 1.2em;">
-                    <div class="company-name">FORCE FILTERS ®</div>
+                    <div class="company-name">
+                        <img width="150" src="{{ public_path('assets/img/force-logo.png') }}" alt="force">
+                    </div>
                     <div style="font-size: 0.5em; color: #555"><small>Distribuidores de:<br><br></small></div>
                     <div class="logo-container">
                         <img src="{{ public_path('assets/img/logos/baldwin.png') }}" alt="baldwin">
