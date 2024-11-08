@@ -132,8 +132,9 @@
                 </td>
                 <td style="border-width: 0px">
                     <div class="company-info">
-                        Email: forcefilters@gmail.com<br>
-                        Teléfono: 3182574787
+                        Email: forcefilters1@gmail.com<br>
+                        Teléfono: +57 318 8366586 <br>
+                        http://wwww.forcefilters.com
                     </div>
                 </td>
             </tr>
