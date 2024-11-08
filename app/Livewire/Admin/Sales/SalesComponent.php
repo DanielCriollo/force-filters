@@ -10,7 +10,7 @@ class SalesComponent extends Component
 {
     use WithPagination;
 
-    public $customer, $startDate, $endDate, $status;
+    public $customer, $startDate, $endDate, $payment_mode;
 
     public function render()
     {
@@ -29,8 +29,8 @@ class SalesComponent extends Component
             $query->where('order_date', '<=', $this->endDate);
         }
 
-        if ($this->status) {
-            $query->where('status', $this->status);
+        if ($this->payment_mode) {
+            $query->where('payment_mode', $this->payment_mode);
         }
 
         $sales = $query->paginate(12);
