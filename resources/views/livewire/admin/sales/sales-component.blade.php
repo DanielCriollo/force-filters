@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-lg-2">
                             <div class="mt-4">
-                                <button wire:click="clearFilters" class="btn btn-primary btn-block">Limpiar
+                                <button wire:click="clearFilters" class="btn btn-primary">Limpiar
                                     Filtros</button>
                             </div>
                         </div>
@@ -49,15 +49,15 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Cliente</th>
-                                            <th>Fecha</th>
-                                            <th>Cantidad Productos</th>
-                                            <th>Total Compra</th>
-                                            <th>Forma de pago</th>
-                                            <th>Fecha Vencimiento</th>
-                                            <th>Días Restantes</th>
-                                            <th>Acciones</th>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">Cliente</th>
+                                            <th class="text-center">Fecha</th>
+                                            <th class="text-center">Cantidad Productos</th>
+                                            <th class="text-center">Total Compra</th>
+                                            <th class="text-center">Forma de pago</th>
+                                            <th class="text-center">Fecha Vencimiento</th>
+                                            <th class="text-center">Días Restantes</th>
+                                            <th class="text-center">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -72,9 +72,9 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $sale->customer->name ?? 'N/A' }}</td>
                                                 <td>{{ $sale->order_date }}</td>
-                                                <td>{{ $sale->items->count() }}</td>
+                                                <td class="text-center">{{ $sale->items->count() }}</td>
                                                 <td>{{ number_format($sale->total_amount, 2) }}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     @if ($sale->payment_mode === 'cash')
                                                         <span class="badge bg-success">Contado</span>
                                                     @elseif($sale->payment_mode === 'credit')
@@ -84,7 +84,7 @@
                                                     @endif
                                                 </td>
                                                 <td>{{ $sale->due_date ?? '-' }}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     @php
                                                         $dueDate = $sale->due_date
                                                             ? Carbon\Carbon::parse($sale->due_date)
@@ -96,13 +96,13 @@
 
                                                     @if ($daysRemaining !== null)
                                                         @if ($daysRemaining < 0)
-                                                            <span class="text-danger">Vencida ({{ abs($daysRemaining) }}
-                                                                días)</span>
+                                                            <span class="text-danger"><small>Vencida ({{ abs($daysRemaining) }}
+                                                                días)</small></span>
                                                         @elseif($daysRemaining === 0)
-                                                            <span class="text-warning">Vence hoy</span>
+                                                            <span class="text-warning"><small>Vence hoy</small></span>
                                                         @else
-                                                            <span class="text-success">Faltan {{ $daysRemaining }}
-                                                                días</span>
+                                                            <span class="text-success"><small>Faltan {{ $daysRemaining }}
+                                                                días</small></span>
                                                         @endif
                                                     @else
                                                         {{ '-' }}

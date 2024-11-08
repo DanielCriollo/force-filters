@@ -44,6 +44,14 @@ class ProductComponent extends Component
     public $mainPhoto;
     public $currentImage;
 
+    public $viewMode = 'table';
+
+    public function toggleViewMode()
+    {
+        $this->viewMode = $this->viewMode === 'table' ? 'cards' : 'table';
+    }
+
+    
     protected function rules()
     {
         return [
