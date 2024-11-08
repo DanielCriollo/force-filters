@@ -14,14 +14,17 @@
             background-color: #fff;
             color: #333;
             font-size: 0.8em;
-
+            background-image: url('{{ public_path('assets/img/marca.png') }}');
+            background-size: cover; /* Adjust this as needed */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-opacity: 0.1; /* Adjust opacity if supported by PDF renderer */
         }
 
         .container {
             width: 100%;
             margin: 0 auto;
             padding: 10px;
-            background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -40,7 +43,6 @@
         }
 
         th {
-            background-color: #f2f2f2;
             color: #333;
             font-weight: bold;
         }
@@ -137,22 +139,41 @@
         
         <table>
             <tr>
+                <th>N° Factura: </th>
+                <td colspan="3">{{ $sale->invoice_number }}</td>
+            </tr>
+            <tr>
                 <th>Fecha de compra: </th>
                 <td>{{ \Carbon\Carbon::parse($sale->order_date)->format('d/m/Y') }}</td>
                 <th>Hora de compra: </th>
                 <td>{{ \Carbon\Carbon::parse($sale->order_date)->format('h:i A') }}</td>
+            </tr>
+            <tr>
+                <th>Forma de pago: </th>
+                <td>
+                    @if ($sale->payment_mode === 'cash')
+                        Contado
+                    @elseif($sale->payment_mode === 'credit')
+                        Crédito ({{ $sale->payment_term }} dias)
+                    @else
+                        Sin especificar
+                    @endif
+                </td>
+                <th>Fecha límite de pago: </th>
+                <td>{{ $sale->due_date ?? 'No aplica' }}
+                </td>
             </tr>
         </table>
 
         <h3>Detalles del cliente:</h3>
         <table>
             <tr>
-                <th>Cliente: </th>
-                <td>{{ strtoupper($sale->customer->name ?? 'N/A') }}</td>
+                <th>Número de identificación: </th>
+                <td>{{ strtoupper($sale->customer->identification ?? 'N/A') }}</td>
             </tr>
             <tr>
-                <th>Correo Electrónico: </th>
-                <td>{{ strtoupper($sale->customer->email ?? 'N/A') }}</td>
+                <th>Cliente: </th>
+                <td>{{ strtoupper($sale->customer->name ?? 'N/A') }}</td>
             </tr>
             <tr>
                 <th>Dirección: </th>
@@ -161,6 +182,10 @@
             <tr>
                 <th>Teléfono: </th>
                 <td>{{ strtoupper($sale->customer->phone ?? 'N/A') }}</td>
+            </tr>
+            <tr>
+                <th>Correo Electrónico: </th>
+                <td>{{ strtoupper($sale->customer->email ?? 'N/A') }}</td>
             </tr>
         </table>
 

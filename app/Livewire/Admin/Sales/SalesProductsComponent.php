@@ -253,6 +253,7 @@ class SalesProductsComponent extends Component
             $sale->items()->delete();
             $sale->update();
         } else {
+            $sale->invoice_number = SalesOrder::getNextInvoiceNumber();
             $sale->save();
         }
     
@@ -273,7 +274,6 @@ class SalesProductsComponent extends Component
         }
     }
     
-
     public function createCustomer()
     {
         $this->validate([

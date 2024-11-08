@@ -1,5 +1,6 @@
 <?php
 
+use App\SalesOrder;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -53,3 +54,12 @@ Route::get('sales/{uuid}/invoice', [SalesController::class, 'downloadInvoice'])-
 
 Auth::routes();
 
+Route::get('/update-invoice-numbers', function () {
+    $orders = SalesOrder::orderBy('id')->get();
+    foreach ($orders as $index => $order) {
+        $order->invoice_number = 'FV-' . str_pad($index + 1, 4, '0', STR_PAD_LEFT);
+        $order->save();
+    }
+
+    return 'Invoice numbers updated successfully!';
+});
