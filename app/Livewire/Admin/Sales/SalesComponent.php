@@ -10,7 +10,7 @@ class SalesComponent extends Component
 {
     use WithPagination;
 
-    public $customer, $startDate, $endDate, $payment_mode;
+    public $customer, $startDate, $endDate, $paymentMode;
 
     public function render()
     {
@@ -29,11 +29,11 @@ class SalesComponent extends Component
             $query->where('order_date', '<=', $this->endDate);
         }
 
-        if ($this->payment_mode) {
-            $query->where('payment_mode', $this->payment_mode);
+        if ($this->paymentMode) {
+            $query->where('payment_mode', $this->paymentMode);
         }
 
-        $sales = $query->paginate(12);
+        $sales = $query->orderBy('order_date', 'desc')->paginate(12);
 
         return view('livewire.admin.sales.sales-component', [
             'sales' => $sales
@@ -45,7 +45,7 @@ class SalesComponent extends Component
         $this->customer = '';
         $this->startDate = null;
         $this->endDate = null;
-        $this->status = '';
+        $this->paymentMode = '';
     }
 
     public function deleteSale($id)

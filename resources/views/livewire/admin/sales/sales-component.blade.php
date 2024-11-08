@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-lg-2">
                             <label><small>Forma de pago:</small></label>
-                            <select wire:model.live="payment_mode" class="form-control">
+                            <select wire:model.live="paymentMode" class="form-control">
                                 <option value="">Seleccionar</option>
                                 <option value="credit">Crédito</option>
                                 <option value="cash">Contado</option>
