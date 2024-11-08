@@ -40,6 +40,7 @@
                                         <x-table-column field="description" sortField="{{ $sortField }}" sortDirection="{{ $sortDirection }}" label="Descripción" />
                                         <x-table-column field="productType" sortField="{{ $sortField }}" sortDirection="{{ $sortDirection }}" label="Tipo" />
                                         <x-table-column field="productCategory" sortField="{{ $sortField }}" sortDirection="{{ $sortDirection }}" label="Categoría" />
+                                        <x-table-column field="brandName" sortField="{{ $sortField }}" sortDirection="{{ $sortDirection }}" label="Marca" />
                                         <x-table-column field="sku" sortField="{{ $sortField }}" sortDirection="{{ $sortDirection }}" label="SKU" />
                                         <x-table-column field="cost_price" sortField="{{ $sortField }}" sortDirection="{{ $sortDirection }}" label="Precio de Costo" />
                                         <x-table-column field="sale_price" sortField="{{ $sortField }}" sortDirection="{{ $sortDirection }}" label="Precio de Venta" />
@@ -52,8 +53,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
                                             @if($product->main_photo)
-                                                <img src="{{ asset('storage/' . $product->main_photo) }}" alt="{{ $product->name }}"
-                                                    style="width: 50px; height: auto;" onclick="openImageModal('{{ asset('storage/' . $product->main_photo) }}')" />
+                                                <img src="{{ asset('storage/' . $product->main_photo) }}" alt="{{ $product->name }}" style="width: 50px; height: auto;" onclick="openImageModal('{{ asset('storage/' . $product->main_photo) }}')" />
                                             @else
                                                 Sin imagen
                                             @endif
@@ -62,6 +62,7 @@
                                         <td>{{ $product->description }}</td>
                                         <td>{{ $product->category->productType->name }}</td>
                                         <td>{{ $product->category->name }}</td>
+                                        <td>{{ $product->brand->name }}</td>
                                         <td>{{ $product->sku }}</td>
                                         <td>{{ number_format($product->cost_price, 2) }}</td>
                                         <td>{{ number_format($product->sale_price, 2) }}</td>
@@ -91,7 +92,12 @@
                                         <img src="{{ $product->main_photo ? asset('storage/' . $product->main_photo) : 'sin-imagen.png' }}" class="card-img-top" alt="{{ $product->name }}">
                                         <div class="card-body">
                                             <h5 class="card-title">{{ $product->name }}</h5>
-                                            <p class="card-text">{{ $product->description }}</p>
+                                            <p class="card-text"><strong>Descripción:</strong> {{ $product->description }}</p>
+                                            <p class="card-text"><strong>Tipo:</strong> {{ $product->category->productType->name }}</p>
+                                            <p class="card-text"><strong>Categoría:</strong> {{ $product->category->name }}</p>
+                                            <p class="card-text"><strong>Marca:</strong> {{ $product->brand->name }}</p>
+                                            <p class="card-text"><strong>SKU:</strong> {{ $product->sku }}</p>
+                                            <p class="card-text"><strong>Precio de Costo:</strong> ${{ number_format($product->cost_price, 2) }}</p>
                                             <p class="card-text"><strong>Precio de Venta:</strong> ${{ number_format($product->sale_price, 2) }}</p>
                                             <div class="d-flex justify-content-between">
                                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#show-modal" wire:click='show({{ $product->id }})'>Ver</button>
@@ -122,7 +128,4 @@
     <script>
         function openImageModal(imageSrc) {
             document.getElementById('modal-image').src = imageSrc;
-            $('#image-modal').modal('show');
-        }
-    </script>
-</div>
+            $('#image-modal').modal('
