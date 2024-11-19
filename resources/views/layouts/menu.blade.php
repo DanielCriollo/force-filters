@@ -49,8 +49,8 @@
             </a>
         </li>
         
-        <li class="menu-item {{ Request::routeIs('sales') && Request::query('status') === 'cash' ? 'active' : '' }}">
-            <a href="{{ route('sales', ['status' => 'cash']) }}" class="menu-link">
+        <li class="menu-item {{ Request::routeIs('sales') && Request::query('status') === 'completed' ? 'active' : '' }}">
+            <a href="{{ route('sales', ['status' => 'completed']) }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
                 <div data-i18n="Basic">Ventas</div>
             </a>
