@@ -43,7 +43,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/brands',BrandComponent::class)->name('brands');
     Route::get('/product-types',ProductTypeComponent::class)->name('product-types');
 
-    Route::get('/sales',SalesComponent::class)->name('sales');
+    Route::get('/sales/{status?}',SalesComponent::class)->name('sales');
     Route::get('/sales-products',SalesProductsComponent::class)->name('sales-products');
     Route::get('/sales-products/{id}/update',SalesProductsComponent::class)->name('sales-products.update');
     Route::get('/product-categories',ProductCategoryComponent::class)->name('product-categories');

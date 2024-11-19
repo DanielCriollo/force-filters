@@ -240,7 +240,7 @@ class SalesProductsComponent extends Component
         $sale->customer_id = $this->customerId;
         $sale->order_date = $this->orderDate;
         $sale->total_amount = $totalAmount;
-        $sale->status = 'completed';
+        $sale->status = $this->paymentMode == 'credit' ? 'pending': 'completed';
         $sale->shipped_date = now();
 
         $sale->payment_mode = $this->paymentMode;

@@ -11,10 +11,17 @@ class SalesComponent extends Component
     use WithPagination;
 
     public $customer, $startDate, $endDate, $paymentMode;
+    public $status = 'pending';
+
+    public function mount($status = null){
+        $this->status = $status ?? $this->status;
+    }
 
     public function render()
     {
         $query = SalesOrder::query();
+
+        $query->where('status','=',$this->status);
 
         if ($this->customer) {
             $query->whereHas('customer', function ($q) {

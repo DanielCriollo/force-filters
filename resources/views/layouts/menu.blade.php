@@ -43,7 +43,14 @@
             </a>
         </li> 
         <li class="menu-item {{ Request::routeIs('sales') ? 'active' : '' }}">
-            <a href="{{ route('sales') }}" class="menu-link">
+            <a href="{{ route('sales', ['status' => 'pending']) }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                <div data-i18n="Basic">Creditos</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ Request::routeIs('sales') ? 'active' : '' }}">
+            <a href="{{ route('sales', ['status' => 'completed']) }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
                 <div data-i18n="Basic">Ventas</div>
             </a>
