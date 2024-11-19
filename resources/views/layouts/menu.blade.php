@@ -42,20 +42,20 @@
                 <div data-i18n="Basic">Nueva Venta</div>
             </a>
         </li> 
-        <li class="menu-item {{ Request::routeIs('sales') ? 'active' : '' }}">
+        <li class="menu-item {{ Request::routeIs('sales') && Request::query('status') === 'pending' ? 'active' : '' }}">
             <a href="{{ route('sales', ['status' => 'pending']) }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
                 <div data-i18n="Basic">Creditos</div>
             </a>
         </li>
-
-        <li class="menu-item {{ Request::routeIs('sales') ? 'active' : '' }}">
-            <a href="{{ route('sales', ['status' => 'completed']) }}" class="menu-link">
+        
+        <li class="menu-item {{ Request::routeIs('sales') && Request::query('status') === 'cash' ? 'active' : '' }}">
+            <a href="{{ route('sales', ['status' => 'cash']) }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
                 <div data-i18n="Basic">Ventas</div>
             </a>
-        </li> 
-    
+        </li>
+        
         <!-- Components -->
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Productos</span></li>
 
