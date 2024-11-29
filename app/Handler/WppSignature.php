@@ -12,7 +12,7 @@ class WppSignature implements SignatureValidator
     public function isValid(Request $request, WebhookConfig $config): bool
 {
         // Obtén la firma del encabezado (ajusta el nombre según el servicio externo)
-        $signature = $request->header('Signature');
+        $signature = $request->header('X-Hub-Signature-256');
 
         if (!$signature) {
             //throw new InvalidSignature("No se encontró la firma en el encabezado.");
