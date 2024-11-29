@@ -15,19 +15,19 @@ return [
              * We expect that every webhook call will be signed using a secret. This secret
              * is used to verify that the payload has not been tampered with.
              */
-            'signing_secret' => env('WEBHOOK_CLIENT_SECRET'),
+            'signing_secret' => env('WPP_SECRET_KEY'),
 
             /*
              * The name of the header containing the signature.
              */
-            'signature_header_name' => 'Signature',
+            'signature_header_name' => 'X-Custom-Signature',
 
             /*
              *  This class will verify that the content of the signature header is valid.
              *
              * It should implement \Spatie\WebhookClient\SignatureValidator\SignatureValidator
              */
-            'signature_validator' => \Spatie\WebhookClient\SignatureValidator\DefaultSignatureValidator::class,
+            'signature_validator' => App\Handler\WppSignature::class,
 
             /*
              * This class determines if the webhook call should be stored and processed.
@@ -60,19 +60,7 @@ return [
              *
              * This should be set to a class that extends \Spatie\WebhookClient\Jobs\ProcessWebhookJob.
              */
-            'process_webhook_job' => '',
-        ],
-        [
-            'name' => 'webhook-sending-wa-ofi',
-            'signing_secret' => 'Ducker++2024',
-            'signature_header_name' => 'Signature',
-            //'signature_validator' => \Spatie\WebhookClient\SignatureValidator\DefaultSignatureValidator::class,
-            'signature_validator' => \App\YourSignatureValidator::class,
-            'webhook_profile' => \Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile::class,
-            //'webhook_response' => \Spatie\WebhookClient\WebhookResponse\DefaultRespondsTo::class,
-            'webhook_response' => \App\OwnResponse::class,
-            'webhook_model' => \Spatie\WebhookClient\Models\WebhookCall::class,
-            'process_webhook_job' => WaOfiJob::class,
+            'process_webhook_job' => App\Handler\ProcessWebhook::class,
         ]
     ],
 
