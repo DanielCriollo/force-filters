@@ -18,3 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::webhooks('wpp/webhook');
+Route::webhooks('wpp/webhook', 'default', 'get');
+Route::webhooks('wpp/webhook', 'default', 'put');
+Route::webhooks('wpp/webhook', 'default', 'patch');
+Route::webhooks('wpp/webhook', 'default', 'delete');
