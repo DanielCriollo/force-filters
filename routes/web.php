@@ -63,3 +63,5 @@ Route::get('/update-invoice-numbers', function () {
 
     return 'Invoice numbers updated successfully!';
 });
+
+Route::webhooks('receiving-wa-ofi', 'webhook-sending-wa-ofi');

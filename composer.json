@@ -15,6 +15,7 @@
         "laraveles/spanish": "^1.5",
         "livewire/livewire": "^3.5",
         "spatie/crawler": "^8.2",
+        "spatie/laravel-webhook-client": "^3.4",
         "symfony/css-selector": "^7.1",
         "symfony/dom-crawler": "^7.1",
         "symfony/http-client": "^7.1",
