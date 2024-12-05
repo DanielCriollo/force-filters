@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Home\HomeComponent;
+use App\Http\Controllers\WebhookController;
 use App\Livewire\Admin\Sales\SalesComponent;
 use App\Livewire\Admin\Brands\BrandComponent;
 use App\Livewire\Admin\Products\ProductComponent;
@@ -66,59 +67,4 @@ Route::get('/update-invoice-numbers', function () {
     return 'Invoice numbers updated successfully!';
 });
 
-Route::get('/whatsapp-webhook', function (Request $request) {
-    $verifyToken = 'Ducker++2024';
-
-    try {
-        $mode = $request->query('hub_mode');
-        $token = $request->query('hub_verify_token');
-        $challenge = $request->query('hub_challenge');
-
-        if ($mode && $token) {
-            if ($mode === 'subscribe' && $token === $verifyToken) {
-                // Validación exitosa
-                return response($challenge, 200)
-                    ->header('Content-Type', 'text/plain');
-            }
-        }
-
-        // Si no se cumple la condición, lanza una excepción
-        throw new Exception('Invalid mode or token');
-    } catch (\Throwable $th) {
-        // Loguear el error para seguimiento
-        Log::error('Webhook validation failed: ', [
-            'error' => $th->getMessage(),
-            'request' => $request->all()
-        ]);
-
-        return response()->json([
-            'success' => false,
-            'error' => $th->getMessage(),
-        ], 500);
-    }
-});
-
-Route::post('/process-webhook', function (Request $request) {
-    try {
-        $bodyContent = json_decode($request->getContent(),true);
-
-        $value = $bodyContent['entry'][0]['changes'][0]['value'];
-        if(!empty($value['messages'])){
-            if($value['messages'][0]['type'] == 'text'){
-                $body = $value['messages'][0]['text']['body'];
-            }
-        }
-        Log::info($body);
-
-        return response()->json([
-            'success' => true,
-            'data' => $body
-        ],200);
-
-    } catch (\Throwable $th) {
-        return response()->json([
-            'success' => false,
-            'data' => $th->getMessage()
-        ],500);
-    }
-});
+Route::match(['get', 'post'], '/process-webhook', [WebhookController::class, 'handleWebhook']);
