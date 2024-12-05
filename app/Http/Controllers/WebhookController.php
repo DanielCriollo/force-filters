@@ -52,6 +52,7 @@ class WebhookController extends Controller
 
     private function processWebhook(Request $request)
     {
+        Log::info($request);
         try {
             $bodyContent = json_decode($request->getContent(), true);
 
