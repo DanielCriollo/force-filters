@@ -65,6 +65,9 @@ class WebhookController extends Controller
                     $from = $value['messages'][0]['from']; 
                     Log::info('Received message: ' . $body);
 
+                     // Respuestas automáticas basadas en palabras clave
+                $responseMessage = $this->generateBotResponse($body);
+
                 $responseMessage = 'Gracias por tu mensaje: "' . $body . '".';
                 $this->sendMessageToWhatsApp($from, $responseMessage);
                 
@@ -120,4 +123,21 @@ class WebhookController extends Controller
             'response' => $response->body(),
         ]);
     }
+
+    private function generateBotResponse(string $message): string
+{
+    if (strpos($message, 'hola') !== false) {
+        return '¡Hola! ¿En qué puedo ayudarte hoy? 😊';
+    }
+
+    if (strpos($message, 'precio') !== false) {
+        return 'Nuestros precios comienzan desde $10. Contáctanos para más detalles. 💰';
+    }
+
+    if (strpos($message, 'gracias') !== false) {
+        return '¡De nada! Estoy aquí para ayudarte. 🙌';
+    }
+
+    return 'Lo siento, no entiendo tu mensaje. ¿Puedes reformularlo? 🤔';
+}
 }
