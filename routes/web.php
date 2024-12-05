@@ -97,3 +97,28 @@ Route::get('/whatsapp-webhook', function (Request $request) {
         ], 500);
     }
 });
+
+Route::post('/process-webhook', function (Request $request) {
+    try {
+        $bodyContent = json_decode($request->getContent(),true);
+
+        $value = $bodyContent['entry'][0]['changes'][0]['value'];
+        if(!empty($value['messages'])){
+            if($value['messages'][0]['type'] == 'text'){
+                $body = $value['messages'][0]['text']['body'];
+            }
+        }
+        Log::info($body);
+
+        return response()->json([
+            'success' => true,
+            'data' => $body
+        ],200);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'data' => $th->getMessage()
+        ],500);
+    }
+});
