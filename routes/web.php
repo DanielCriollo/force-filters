@@ -1,10 +1,11 @@
 <?php
 
 use App\SalesOrder;
+use Illuminate\Http\Request;
 use TCG\Voyager\Facades\Voyager;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Request;
 use App\Livewire\Admin\Home\HomeComponent;
 use App\Livewire\Admin\Sales\SalesComponent;
 use App\Livewire\Admin\Brands\BrandComponent;
@@ -66,27 +67,33 @@ Route::get('/update-invoice-numbers', function () {
 });
 
 Route::get('/whatsapp-webhook', function (Request $request) {
-    try {
-        $verifyToken = 'Ducker++2024';
-        $query = $request->query();
-        
-        $mode = $query['hub_mode'];
-        $token = $query['hub_verify_token'];
-        $challenge = $query['hub_challenge'];
+    $verifyToken = 'Ducker++2024';
 
-        if($mode && $token){
-            if($mode === 'subscribe' && $token == $verifyToken){
-                return response($challenge, 200)->header('Content-Type','text/plain');
+    try {
+        $mode = $request->query('hub_mode');
+        $token = $request->query('hub_verify_token');
+        $challenge = $request->query('hub_challenge');
+
+        if ($mode && $token) {
+            if ($mode === 'subscribe' && $token === $verifyToken) {
+                // Validación exitosa
+                return response($challenge, 200)
+                    ->header('Content-Type', 'text/plain');
             }
         }
-        throw new Exception('Invalid request');
 
-
+        // Si no se cumple la condición, lanza una excepción
+        throw new Exception('Invalid mode or token');
     } catch (\Throwable $th) {
+        // Loguear el error para seguimiento
+        Log::error('Webhook validation failed: ', [
+            'error' => $th->getMessage(),
+            'request' => $request->all()
+        ]);
+
         return response()->json([
             'success' => false,
-            'error' => $th->getMessage()
-        ],500);
+            'error' => $th->getMessage(),
+        ], 500);
     }
 });
-
