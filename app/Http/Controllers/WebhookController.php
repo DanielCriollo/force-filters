@@ -125,7 +125,7 @@ class WebhookController extends Controller
         ]);
     }
 
-    private function generateBotResponse(string $message): string 
+    private function generateBotResponse(string $message): string
     {
         // Verificar si el mensaje contiene "consulta"
         if (strpos($message, 'consulta') !== false) {
@@ -159,23 +159,27 @@ class WebhookController extends Controller
         $identification = session('customer_identification');  // Obtener la identificación desde la sesión
     
         if ($identification) {
+            // Verificar la opción seleccionada en el mensaje
             $customer = Customer::where('identification', $identification)->first();
     
-            if (strpos($message, '1') !== false) {
-                if ($customer) {
-                    return "El nombre del cliente es: {$customer->name}";
-                }
+            if (!$customer) {
+                return 'No encontramos un cliente con esa identificación. Por favor, envía una identificación válida.';
             }
     
+            // Opción 1: Consultar nombre
+            if (strpos($message, '1') !== false) {
+                return "El nombre del cliente es: {$customer->name}";
+            }
+    
+            // Opción 2: Fecha de creación
             if (strpos($message, '2') !== false) {
-                if ($customer) {
-                    return "La fecha de creación del cliente es: {$customer->created_at}";
-                }
+                return "La fecha de creación del cliente es: {$customer->created_at}";
             }
         }
     
         // Mensaje por defecto si no se entiende la opción
         return 'No reconozco la opción. Vuelve a escribir "consulta" para ver las opciones.';
     }
+    
     
 }
