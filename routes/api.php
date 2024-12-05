@@ -22,3 +22,29 @@ Route::webhooks('wpp/webhook', 'default', 'get');
 Route::webhooks('wpp/webhook', 'default', 'put');
 Route::webhooks('wpp/webhook', 'default', 'patch');
 Route::webhooks('wpp/webhook', 'default', 'delete');
+
+Route::get('/update-invoice-numbers', function (Request $request) {
+    try {
+        $verifyToken = 'Ducker++2024';
+        $query = $request->query();
+        
+        $mode = $query['hub_mode'];
+        $token = $query['hub_verify_token'];
+        $challenge = $query['hub_challenge'];
+
+        if($mode && $token){
+            if($mode === 'subscribe' && $token == $verifyToken){
+                return response($challenge, 200)->header('Content-Type','text/plain');
+            }
+        }
+        throw new Exception('Invalid request');
+
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'error' => $th->getMessage()
+        ],500);
+    }
+});
+

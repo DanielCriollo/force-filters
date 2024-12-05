@@ -4,6 +4,7 @@ use App\SalesOrder;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 use App\Livewire\Admin\Home\HomeComponent;
 use App\Livewire\Admin\Sales\SalesComponent;
 use App\Livewire\Admin\Brands\BrandComponent;
@@ -62,5 +63,30 @@ Route::get('/update-invoice-numbers', function () {
     }
 
     return 'Invoice numbers updated successfully!';
+});
+
+Route::get('/whatsapp-webhook', function (Request $request) {
+    try {
+        $verifyToken = 'Ducker++2024';
+        $query = $request->query();
+        
+        $mode = $query['hub_mode'];
+        $token = $query['hub_verify_token'];
+        $challenge = $query['hub_challenge'];
+
+        if($mode && $token){
+            if($mode === 'subscribe' && $token == $verifyToken){
+                return response($challenge, 200)->header('Content-Type','text/plain');
+            }
+        }
+        throw new Exception('Invalid request');
+
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'error' => $th->getMessage()
+        ],500);
+    }
 });
 
