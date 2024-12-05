@@ -67,4 +67,4 @@ Route::get('/update-invoice-numbers', function () {
     return 'Invoice numbers updated successfully!';
 });
 
-Route::match(['get', 'post'], '/process-webhook', [WebhookController::class, 'handleWebhook']);
+Route::match(['get', 'post'], 'whatsapp-webhook', [WebhookController::class, 'handleWebhook']);
