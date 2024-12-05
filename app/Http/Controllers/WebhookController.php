@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use el;
+use App\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -62,14 +64,14 @@ class WebhookController extends Controller
 
                 if (!empty($value['messages']) && $value['messages'][0]['type'] === 'text') {
                     $body = $value['messages'][0]['text']['body'];
-                    $from = $value['messages'][0]['from']; 
+                    $from = $value['messages'][0]['from'];
                     Log::info('Received message: ' . $body);
 
-                     // Respuestas automáticas basadas en palabras clave
-                $responseMessage = $this->generateBotResponse($body);
-                
-                $this->sendMessageToWhatsApp($from, $responseMessage);
-                
+                    // Respuestas automáticas basadas en palabras clave
+                    $responseMessage = $this->generateBotResponse($body);
+
+                    $this->sendMessageToWhatsApp($from, $responseMessage);
+
                     return response()->json([
                         'success' => true,
                         'data' => $body,
@@ -123,20 +125,57 @@ class WebhookController extends Controller
         ]);
     }
 
-    private function generateBotResponse(string $message): string
-{
-    if (strpos($message, 'hola') !== false) {
-        return '¡Hola! ¿En qué puedo ayudarte hoy? 😊';
+    private function generateBotResponse(string $message): string 
+    {
+        // Verificar si el mensaje contiene "consulta"
+        if (strpos($message, 'consulta') !== false) {
+            // Buscar la identificación (asumimos que el formato es id:numerodeidentificacion)
+            $pattern = '/id:(\d+)/'; // Expresión regular para obtener la identificación
+            if (preg_match($pattern, $message, $matches)) {
+                $identification = $matches[1];
+    
+                // Almacenar la identificación en la sesión
+                session(['customer_identification' => $identification]);
+    
+                // Buscar el cliente en la base de datos
+                $customer = Customer::where('identification', $identification)->first();
+    
+                // Si el cliente existe
+                if ($customer) {
+                    return "¡Hola {$customer->name}! Selecciona una de las opciones:\n" .
+                        "1. Consultar nombre\n" .
+                        "2. Fecha de creación";
+                } else {
+                    // Si el cliente no se encuentra
+                    return "Lo siento, no encontramos un cliente con esa identificación. Intenta nuevamente con un número válido.";
+                }
+            } else {
+                // Si el formato de identificación no es válido
+                return "Por favor, envía la identificación en el formato 'id:numerodeidentificacion'. Ejemplo: id:12345";
+            }
+        }
+    
+        // Verificar la opción seleccionada (1 o 2) y devolver la información correspondiente
+        $identification = session('customer_identification');  // Obtener la identificación desde la sesión
+    
+        if ($identification) {
+            $customer = Customer::where('identification', $identification)->first();
+    
+            if (strpos($message, '1') !== false) {
+                if ($customer) {
+                    return "El nombre del cliente es: {$customer->name}";
+                }
+            }
+    
+            if (strpos($message, '2') !== false) {
+                if ($customer) {
+                    return "La fecha de creación del cliente es: {$customer->created_at}";
+                }
+            }
+        }
+    
+        // Mensaje por defecto si no se entiende la opción
+        return 'No reconozco la opción. Vuelve a escribir "consulta" para ver las opciones.';
     }
-
-    if (strpos($message, 'precio') !== false) {
-        return 'Nuestros precios comienzan desde $10. Contáctanos para más detalles. 💰';
-    }
-
-    if (strpos($message, 'gracias') !== false) {
-        return '¡De nada! Estoy aquí para ayudarte. 🙌';
-    }
-
-    return 'Lo siento, no entiendo tu mensaje. ¿Puedes reformularlo? 🤔';
-}
+    
 }
