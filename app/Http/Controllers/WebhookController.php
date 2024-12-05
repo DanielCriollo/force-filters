@@ -67,8 +67,7 @@ class WebhookController extends Controller
 
                      // Respuestas automáticas basadas en palabras clave
                 $responseMessage = $this->generateBotResponse($body);
-
-                $responseMessage = 'Gracias por tu mensaje: "' . $body . '".';
+                
                 $this->sendMessageToWhatsApp($from, $responseMessage);
                 
                     return response()->json([
