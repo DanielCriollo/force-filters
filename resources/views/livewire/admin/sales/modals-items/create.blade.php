@@ -9,11 +9,11 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <label>Buscar Producto: </label>
-                        <input type="text" class="form-control" wire:model="searchProduct" wire:keyup="searchProductName"
-                            placeholder="Nombre del producto">
-                        @if(!empty($matchingProducts))
+                        <input type="text" class="form-control" wire:model="searchProduct"
+                            wire:keyup="searchProductName" placeholder="Nombre del producto">
+                        @if (!empty($matchingProducts))
                             <ul class="list-group mt-2">
-                                @foreach($matchingProducts as $product)
+                                @foreach ($matchingProducts as $product)
                                     <li class="list-group-item list-group-item-action" style="cursor: pointer;"
                                         wire:click="selectProduct({{ $product->id }})">
                                         {{ $product->name }}
@@ -21,33 +21,43 @@
                                 @endforeach
                             </ul>
                         @endif
-                        @if($noResultsProducts == true)
+                        @if ($noResultsProducts == true)
                             <div class="mt-2 text-danger">No se encontraron resultados</div>
                             <div class="row mt-3">
                                 <div class="col-lg-12">
                                     <label>Nombre:</label>
                                     <input type="text" class="form-control" wire:model='nameProduct'>
-                                    @error('nameProduct') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('nameProduct')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-lg-12 mt-2">
                                     <label for="">Descripción:</label>
                                     <input type="text" class="form-control" wire:model='descriptionProduct'>
-                                    @error('descriptionProduct') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('descriptionProduct')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-lg-12 mt-2">
                                     <label for="">SKU:</label>
                                     <input type="text" class="form-control" wire:model='sku'>
-                                    @error('sku') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('sku')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-lg-12 mt-2">
                                     <label for="">Tipo:</label>
                                     <input type="text" class="form-control" wire:model='type'>
-                                    @error('type') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('type')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-lg-12 mt-2">
                                     <label for="">Categoría:</label>
                                     <input type="text" class="form-control" wire:model='category'>
-                                    @error('category') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('category')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-lg-12 mt-2">
                                     <label for="">Marca:</label>
@@ -57,15 +67,20 @@
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('brand') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('brand')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-lg-12 mt-2">
                                     <label for="">Cantidad:</label>
                                     <input type="text" class="form-control" wire:model='quantity'>
-                                    @error('quantity') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('quantity')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-lg-12 mt-3">
-                                    <button class="btn btn-success" wire:click="createNewProduct">Crear Producto</button>
+                                    <button class="btn btn-success" wire:click="createNewProduct">Crear
+                                        Producto</button>
                                 </div>
                             </div>
                         @endif
@@ -73,7 +88,7 @@
                 </div>
 
                 <!-- Formulario de detalles de producto seleccionado -->
-                @if($productId)
+                @if ($productId)
                     <div class="row">
                         <div class="col-lg-12 mt-2">
                             <label for="">Nombre:</label>
@@ -100,9 +115,23 @@
                             <input type="text" class="form-control" wire:model='brand' disabled>
                         </div>
                         <div class="col-lg-12 mt-2">
+                            <label>Precio de Costo: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control"
+                                value="{{ '$' . number_format($costPrice, 0, ',', '.') }}" disabled>
+                        </div>
+                        <div class="col-lg-12 mt-2">
+                            <label>Precio de Venta: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" wire:model="salePrice">
+                            @error('salePrice')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-lg-12 mt-2">
                             <label for="">Cantidad:</label>
                             <input type="text" class="form-control" wire:model='quantity'>
-                            @error('quantity') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error('quantity')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 @endif

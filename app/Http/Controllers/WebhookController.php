@@ -141,7 +141,7 @@ class WebhookController extends Controller
             // Recortar la identificación después de "id:"
             $identification = substr($message, 3);  // Elimina el "id:" y toma lo que sigue
         
-            // Validar que la identificación no esté vacía
+            // Validar que la identificación no esté vacía y sea numérica
             if (empty($identification) || !is_numeric($identification)) {
                 return "Por favor, proporciona un número de identificación válido después de 'id:'. Ejemplo: id:12345";
             }

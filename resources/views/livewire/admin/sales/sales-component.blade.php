@@ -1,4 +1,7 @@
 <div>
+
+    @include('livewire.admin.sales.modals.mark-as-paid')
+
     @section('title', 'Ventas')
 
     @section('breadcrumb')
@@ -55,8 +58,11 @@
                                             <th class="text-center">Cantidad Productos</th>
                                             <th class="text-center">Total Compra</th>
                                             <th class="text-center">Forma de pago</th>
-                                            <th class="text-center">Fecha Vencimiento</th>
-                                            <th class="text-center">Días Restantes</th>
+                                            @if($status !== 'completed')
+                                                <th class="text-center">Fecha Vencimiento</th>
+                                                <th class="text-center">Días Restantes</th>
+                                                <th class="text-center">Fecha Pago Crédito</th>
+                                            @endif
                                             <th class="text-center">Acciones</th>
                                         </tr>
                                     </thead>
@@ -71,7 +77,8 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $sale->customer->name ?? 'N/A' }}</td>
-                                                <td>{{ $sale->order_date }}</td>
+                                                <td>{{ $sale->order_date ? \Carbon\Carbon::parse($sale->order_date)->format('Y-m-d H:i') : '-' }}
+                                                </td>
                                                 <td class="text-center">{{ $sale->items->count() }}</td>
                                                 <td>{{ number_format($sale->total_amount, 2) }}</td>
                                                 <td class="text-center">
@@ -83,32 +90,47 @@
                                                         <span class="badge bg-secondary">N/A</span>
                                                     @endif
                                                 </td>
-                                                <td>{{ $sale->due_date ?? '-' }}</td>
-                                                <td class="text-center">
-                                                    @php
-                                                        $dueDate = $sale->due_date
-                                                            ? Carbon\Carbon::parse($sale->due_date)
-                                                            : null;
-                                                        $daysRemaining = $dueDate
-                                                            ? now()->diffInDays($dueDate, false)
-                                                            : null;
-                                                    @endphp
-
-                                                    @if ($daysRemaining !== null)
-                                                        @if ($daysRemaining < 0)
-                                                            <span class="text-danger"><small>Vencida ({{ abs($daysRemaining) }}
-                                                                días)</small></span>
-                                                        @elseif($daysRemaining === 0)
-                                                            <span class="text-warning"><small>Vence hoy</small></span>
-                                                        @else
-                                                            <span class="text-success"><small>Faltan {{ $daysRemaining }}
-                                                                días</small></span>
-                                                        @endif
+                                                @if($status !== 'completed')
+                                                <td>
+                                                    @if ($sale->due_date)
+                                                        {{ \Carbon\Carbon::parse($sale->due_date . ' 23:59')->format('Y-m-d H:i') }}
                                                     @else
-                                                        {{ '-' }}
+                                                        -
                                                     @endif
                                                 </td>
+                                                <td class="text-center">
+                                                    @if ($sale->payment_mode === 'credit' && $sale->credit_paid_at)
+                                                        <span class="badge bg-success">Pagado</span>
+                                                    @else
+                                                        @php
+                                                            $dueDate = $sale->due_date
+                                                                ? Carbon\Carbon::parse($sale->due_date)
+                                                                : null;
+                                                            $daysRemaining = $dueDate
+                                                                ? now()->diffInDays($dueDate, false)
+                                                                : null;
+                                                        @endphp
 
+                                                        @if ($daysRemaining !== null)
+                                                            @if ($daysRemaining < 0)
+                                                                <span class="text-danger"><small>Vencida
+                                                                        ({{ abs($daysRemaining) }} días)</small></span>
+                                                            @elseif($daysRemaining === 0)
+                                                                <span class="text-warning"><small>Vence
+                                                                        hoy</small></span>
+                                                            @else
+                                                                <span class="text-success"><small>Faltan
+                                                                        {{ $daysRemaining }} días</small></span>
+                                                            @endif
+                                                        @else
+                                                            {{ '-' }}
+                                                        @endif
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $sale->credit_paid_at ? \Carbon\Carbon::parse($sale->credit_paid_at)->format('Y-m-d H:i') : '-' }}
+                                                </td>
+                                                @endif
                                                 <td>
                                                     <a class="btn btn-info btn-sm" title="Ver PDF de la Factura"
                                                         href="{{ route('sales.invoice', $sale->uuid) }}"
@@ -124,7 +146,13 @@
                                                         onclick="if(confirm('¿Estás seguro de que deseas eliminar esta venta?')) { @this.deleteSale({{ $sale->id }}) }">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-                                                </td>
+                                                    @if ($sale->payment_mode === 'credit' && !$sale->credit_paid_at)
+                                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                                            data-bs-target="#edit-modal"
+                                                            wire:click="openMarkAsPaidModal({{ $sale->id }})">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    @endif
                                             </tr>
                                         @endforeach
                                     </tbody>

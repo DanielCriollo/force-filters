@@ -13,7 +13,12 @@ class SalesComponent extends Component
     public $customer, $startDate, $endDate, $paymentMode;
     public $status = 'pending';
 
-    public function mount($status = null){
+    public $saleToMarkAsPaid = null;
+    public $creditPaidAt = null;
+
+
+    public function mount($status = null)
+    {
         $this->status = $status ?? $this->status;
     }
 
@@ -21,7 +26,14 @@ class SalesComponent extends Component
     {
         $query = SalesOrder::query();
 
-        $query->where('status','=',$this->status);
+        //$query->where('status', '=', $this->status);
+
+        // Filtro adicional según status
+        if ($this->status === 'completed') {
+            $query->where('payment_mode', '!=', 'credit');
+        } elseif ($this->status === 'pending') {
+            $query->where('payment_mode', 'credit');
+        }
 
         if ($this->customer) {
             $query->whereHas('customer', function ($q) {
@@ -66,5 +78,48 @@ class SalesComponent extends Component
         } else {
             $this->dispatch('toast', message: 'No se pudo encontrar la venta.', notify: 'error');
         }
+    }
+
+    public function openMarkAsPaidModal($saleId)
+    {
+        $this->saleToMarkAsPaid = $saleId;
+        $this->creditPaidAt = now()->format('Y-m-d\TH:i');
+    }
+
+    public function cancelMarkAsPaid()
+    {
+        $this->saleToMarkAsPaid = null;
+        $this->creditPaidAt = null;
+        $this->dispatch('close-modal');
+    }
+
+    public function markAsPaid()
+    {
+        $sale = \App\SalesOrder::find($this->saleToMarkAsPaid);
+        if ($sale && $sale->payment_mode === 'credit' && !$sale->credit_paid_at) {
+            $sale->credit_paid_at = now();
+            $sale->save();
+
+            $this->dispatch('toast', message: 'Venta marcada como pagada.', notify: 'success');
+            $this->cancel();
+        } else {
+            $this->dispatch('toast', message: 'No se pudo marcar como pagada.', notify: 'error');
+            $this->cancel();
+        }
+    }
+
+    public function cancel()
+    {
+        $this->resetInputFields();
+        $this->resetErrorBag();
+        $this->resetValidation();
+        $this->dispatch('close-modal');
+    }
+
+    public function resetInputFields()
+    {
+        $this->reset([
+            'creditPaidAt',
+        ]);
     }
 }

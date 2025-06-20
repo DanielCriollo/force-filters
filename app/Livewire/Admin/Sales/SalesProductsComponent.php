@@ -55,16 +55,17 @@ class SalesProductsComponent extends Component
     public $orderDate;
     public $paymentMethod, $paymentMode = '', $paymentTerm = 1, $dueDate;
 
-    public function mount($id = null){
+    public function mount($id = null)
+    {
 
         $this->showModals = false;
-        $this->orderDate = now()->format('Y-m-d\TH:i'); 
+        $this->orderDate = now()->format('Y-m-d\TH:i');
 
 
         $this->productTypes = ProductType::all();
         $this->brands = Brand::all();
 
-        if($id){
+        if ($id) {
             $this->saleOrderId = $id;
             $saleOrder = SalesOrder::find($id);
             $this->selectCustomer($saleOrder->customer_id);
@@ -77,7 +78,7 @@ class SalesProductsComponent extends Component
         }
 
         $products = SalesOrderItem::where('sales_order_id', '=', $this->saleOrderId)->get();
-        foreach($products as $product){
+        foreach ($products as $product) {
             $this->selectProduct($product->product_id);
 
             $this->productsCart[] = [
@@ -87,7 +88,7 @@ class SalesProductsComponent extends Component
                 'unitPrice' => $this->salePrice,
                 'subtotal' => $product->quantity * $this->salePrice
             ];
-    
+
             $this->cancel();
         }
 
@@ -108,7 +109,7 @@ class SalesProductsComponent extends Component
 
         $this->noResults = count($this->matchingCustomers) === 0;
 
-        if($this->noResults){
+        if ($this->noResults) {
             $this->resetInputsFieldsCustomers();
             $this->customerId = '';
         }
@@ -149,7 +150,7 @@ class SalesProductsComponent extends Component
         $this->mainPhoto = $product->main_photo;
         $this->photos = $product->photos;
 
-        if($this->showModals){
+        if ($this->showModals) {
             $this->dispatch('toast', message: 'Producto seleccionado correctamente.', notify: 'success');
         }
     }
@@ -169,7 +170,7 @@ class SalesProductsComponent extends Component
         $this->email = $customer->email;
         $this->phone = $customer->phone;
 
-        if($this->showModals){
+        if ($this->showModals) {
             $this->dispatch('toast', message: 'Cliente seleccionado exitosamente.', notify: 'success');
         }
     }
@@ -202,14 +203,14 @@ class SalesProductsComponent extends Component
         $this->dispatch('close-modal');
     }
 
-
     public function addProduct()
     {
-
         $this->validate([
-            'quantity' => 'required|numeric|min:1'
+            'quantity' => 'required|numeric|min:1',
+            'salePrice' => 'required|numeric|min:0.01'
         ], [], [
-            'quantity' => 'cantidad'
+            'quantity' => 'cantidad',
+            'salePrice' => 'precio de venta'
         ]);
 
         $this->productsCart[] = [
@@ -225,6 +226,13 @@ class SalesProductsComponent extends Component
         $this->dispatch('toast', message: 'Producto agregado exitosamente.', notify: 'success');
     }
 
+    public function removeProduct($index)
+    {
+        unset($this->productsCart[$index]);
+        $this->productsCart = array_values($this->productsCart);
+    }
+
+
     public function store()
     {
         $this->validate([
@@ -233,21 +241,21 @@ class SalesProductsComponent extends Component
             'productsCart.required' => 'Debe agregar al menos un producto.',
             'productsCart.min' => 'Debe agregar al menos un producto.',
         ]);
-    
+
         $totalAmount = collect($this->productsCart)->sum('subtotal');
-    
+
         $sale = $this->saleOrderId ? SalesOrder::find($this->saleOrderId) : new SalesOrder();
         $sale->customer_id = $this->customerId;
         $sale->order_date = $this->orderDate;
         $sale->total_amount = $totalAmount;
-        $sale->status = $this->paymentMode == 'credit' ? 'pending': 'completed';
+        $sale->status = $this->paymentMode == 'credit' ? 'pending' : 'completed';
         $sale->shipped_date = now();
 
         $sale->payment_mode = $this->paymentMode;
         $sale->payment_method = $this->paymentMethod;
         $sale->payment_term = $this->paymentTerm;
         $sale->due_date = $this->dueDate;
-        
+
         if ($this->saleOrderId) {
 
             $sale->items()->delete();
@@ -256,7 +264,7 @@ class SalesProductsComponent extends Component
             $sale->invoice_number = SalesOrder::getNextInvoiceNumber();
             $sale->save();
         }
-    
+
         foreach ($this->productsCart as $item) {
             $sale->items()->create([
                 'product_id' => $item['id'],
@@ -265,15 +273,15 @@ class SalesProductsComponent extends Component
                 'total_price' => $item['subtotal'],
             ]);
         }
-    
+
         $message = $this->saleOrderId ? 'Venta actualizada con éxito.' : 'Venta creada con éxito.';
         $this->dispatch('toast', message: $message, notify: 'success');
-    
+
         if (!$this->saleOrderId) {
             $this->saleOrderId = $sale->id;
         }
     }
-    
+
     public function createCustomer()
     {
         $this->validate([
@@ -346,5 +354,21 @@ class SalesProductsComponent extends Component
     {
         // Sumar el plazo a la fecha de la orden (esto puede ajustarse según tus necesidades)
         $this->dueDate = Carbon::parse($this->orderDate)->addDays($this->paymentTerm)->format('Y-m-d');
+    }
+
+    public function incrementQuantity($index)
+    {
+        if (isset($this->productsCart[$index])) {
+            $this->productsCart[$index]['quantity']++;
+            $this->productsCart[$index]['subtotal'] = $this->productsCart[$index]['quantity'] * $this->productsCart[$index]['unitPrice'];
+        }
+    }
+
+    public function decrementQuantity($index)
+    {
+        if (isset($this->productsCart[$index]) && $this->productsCart[$index]['quantity'] > 1) {
+            $this->productsCart[$index]['quantity']--;
+            $this->productsCart[$index]['subtotal'] = $this->productsCart[$index]['quantity'] * $this->productsCart[$index]['unitPrice'];
+        }
     }
 }
